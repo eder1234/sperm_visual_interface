@@ -3,11 +3,13 @@ import tkinter as tk
 from tkinter import filedialog
 from PIL import ImageTk, Image
 
+import functions
+
 class FileMergeGUI:
     def __init__(self, master):
         self.master = master
         self.master.title("Text File Merger")
-        self.master.geometry("400x250")
+        self.master.geometry("450x300")
         self.master.resizable(False, False)
         
         # Load and resize logo image
@@ -23,7 +25,7 @@ class FileMergeGUI:
         self.logo_label.grid(row=0, column=0, columnspan=3, padx=10, pady=10)
         
         # File 1 selection
-        self.file1_label = tk.Label(self.master, text="Select trajectory file 1:")
+        self.file1_label = tk.Label(self.master, text="Select trajectory file:")
         self.file1_label.grid(row=1, column=0, padx=5, pady=5)
         self.file1_button = tk.Button(self.master, text="Browse...", command=self.select_file1)
         self.file1_button.grid(row=1, column=1, padx=5, pady=5)
@@ -32,7 +34,7 @@ class FileMergeGUI:
         self.file1_entry.grid(row=1, column=2, padx=5, pady=5)
         
         # File 2 selection
-        self.file2_label = tk.Label(self.master, text="Select motility file 2:")
+        self.file2_label = tk.Label(self.master, text="Select motility file:")
         self.file2_label.grid(row=2, column=0, padx=5, pady=5)
         self.file2_button = tk.Button(self.master, text="Browse...", command=self.select_file2)
         self.file2_button.grid(row=2, column=1, padx=5, pady=5)
@@ -53,12 +55,21 @@ class FileMergeGUI:
         self.file2_path.set(file_path)
     
     def merge_files(self):
-        file1_path = self.file1_path.get()
-        file2_path = self.file2_path.get()
+        traj_path = self.file1_path.get()
+        mot_path = self.file2_path.get()
+        traj_col_names = ["name", "date", "quantity", "exposure", "tracked_id", "x", "y"]
         
-        if file1_path and file2_path:
-            df1 = pd.read_csv(file1_path, delimiter="\t")
-            df2 = pd.read_csv(file2_path, delimiter="\t")
+        if traj_path and mot_path:
+            df1 = pd.read_csv(traj_path, names=traj_col_names)
+            traj_df = functions.trajFrame(df1)
+            traj_df = traj_df.sort_values(by=['name', 'date', 'quantity', 'exposure', 'tracked_id']) 
+            
+            mot_df = pd.read_csv("Motility_Results-partial.txt", engine='python') 
+            id_ = [x for x in range(mot_df.shape[0])]
+            mot_df["id"] = id_
+            mot_df = mot_df.sort_values(by=['ID1', 'ID2', 'ID3', 'ID4', 'id'])
+            
+            # Create the master data frame {notebook}
             merged_df = pd.merge(df1, df2, on="id")
             print(merged_df)
         else:
