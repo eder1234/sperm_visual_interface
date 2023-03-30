@@ -62,16 +62,34 @@ class FileMergeGUI:
         if traj_path and mot_path:
             df1 = pd.read_csv(traj_path, names=traj_col_names)
             traj_df = functions.trajFrame(df1)
-            traj_df = traj_df.sort_values(by=['name', 'date', 'quantity', 'exposure', 'tracked_id']) 
+            traj_df = traj_df.sort_values(by=['name', 'date', 'quantity', 'exposure', 'tracked_id'])
+            traj_name_list = traj_df["name"].values.tolist()
+            traj_date_list = traj_df["date"].values.tolist()
+            traj_quantity_list = traj_df["quantity"].values.tolist()
+            traj_exposure_list = traj_df["exposure"].values.tolist()
+            traj_tracked_id_list = traj_df["tracked_id"].values.tolist()
+            traj_traj_list = traj_df["traj"].values.tolist() 
             
             mot_df = pd.read_csv("Motility_Results-partial.txt", engine='python') 
             id_ = [x for x in range(mot_df.shape[0])]
             mot_df["id"] = id_
             mot_df = mot_df.sort_values(by=['ID1', 'ID2', 'ID3', 'ID4', 'id'])
+            mot_VCL_list = mot_df["VCL"].values.tolist()
+            mot_VAP_list = mot_df["VAP"].values.tolist()
+            mot_VSL_list = mot_df["VSL"].values.tolist()
+            mot_LIN_list = mot_df["LIN"].values.tolist()
+            mot_STR_list = mot_df["STR"].values.tolist()
+            mot_WOB_list = mot_df["WOB"].values.tolist()
+            mot_BeatCross_list = mot_df["BeatCross"].values.tolist()
+            mot_ALH_list = mot_df["ALH"].values.tolist()
+
+            master_dict = {"name":traj_name_list, "date":traj_date_list, "quantity":traj_quantity_list, 
+                        "exposure":traj_exposure_list, "tracked_id":traj_tracked_id_list, "traj":traj_traj_list,
+                        "VCL":mot_VCL_list, "VAP":mot_VAP_list, "VSL":mot_VSL_list, "LIN":mot_LIN_list, "STR":mot_STR_list,
+                        "WOB":mot_WOB_list, "BeatCross":mot_BeatCross_list, "ALH":mot_ALH_list}
             
-            # Create the master data frame {notebook}
-            merged_df = pd.merge(df1, df2, on="id")
-            print(merged_df)
+            master_df = pd.DataFrame(master_dict)
+            print(master_df)
         else:
             print("Please select both files.")
         
