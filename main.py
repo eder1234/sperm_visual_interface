@@ -9,7 +9,7 @@ class FileMergeGUI:
     def __init__(self, master):
         self.master = master
         self.master.title("LenSperm")
-        self.master.geometry("450x300")
+        self.master.geometry("400x350")
         self.master.resizable(False, False)
         
         # Load and resize logo image
@@ -43,8 +43,15 @@ class FileMergeGUI:
         self.file2_entry.grid(row=2, column=2, padx=5, pady=5)
         
         # Merge button
-        self.merge_button = tk.Button(self.master, text="Create master dataframe", command=self.merge_files)
+        self.merge_button = tk.Button(self.master, text="Create master df", command=self.merge_files)
         self.merge_button.grid(row=3, column=1, padx=5, pady=10)
+
+        # Analyse button
+        self.analyse_button = tk.Button(self.master, text="Analyse", command=self.analyse_files)
+        self.analyse_button.grid(row=4, column=1, padx=5, pady=10)
+
+    def analyse_files(self):
+        print("Analyse button pressed")
     
     def select_file1(self):
         file_path = filedialog.askopenfilename(title="Select trajectory file", filetypes=(("Text Files", "*.txt"),))
@@ -98,4 +105,3 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = FileMergeGUI(root)
     root.mainloop()
-
